@@ -13,6 +13,8 @@ The steps are the following:
   - Once data is fetch, use it to compute the last RSI, Momentum and difference from moving average
   - Normalize all this, and pass it as input 
 
-- Once the prediction is done ......
+- Once the prediction is done: 
+  - Prediction says to open a trade -> use the HXRO api to "enter contest"
 
-TODO
+- While not actually picking trade on HXRO, make "fake trade", and compute the accuracy on them (+ PnL)
+
