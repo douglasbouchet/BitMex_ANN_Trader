@@ -1,21 +1,20 @@
 import requests
 import json
+from comptIndicators import computeRSI
 
 cointype: str = "btc"
 timeframe: str = "1d"
 
 url = f'https://{cointype}.history.hxro.io/{timeframe}'
 
-r = requests.get(url)
-
-json_data = r.json()
-
-print(json_data.get('data')[-1])  # -1 gives the value of the current candle
-# pick -2, else impossible to pick a trade since we need some time to perform computation
-print(json_data.get('data')[-2])
-# we use which correspond to last FULL candle to compute the next one (delay 2 (à vérifier))
+#  Last 44 closes prices (we do not pick current one -> start -2)
+last_cp = requests.get(url).json()['data'][-2: -46: -1]
 
 
-TODO
+for i, el in enumerate(last_cp):
+    last_cp[i] = el.get('close')
+
+# index 0 represent close price of last full candle
+computeRSI(last_cp[::-1])
 # get last 30 + 14 close price, thus can recompute rsi, moving avg, momentum
 # and save them in the data set (so cp old data set from bachelor project)
