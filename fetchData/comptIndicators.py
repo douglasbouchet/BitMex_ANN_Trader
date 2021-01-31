@@ -34,21 +34,19 @@ def computeMomentum(last_cp):
     for i in range(0, 30):
         momentum[i] = last_cp[i] - last_cp[i + 10]
 
-    return momentum
+    return momentum[::-1]
 
 
 def computeMA(last_cp):
     ma = [0] * 30
     for i in range(0, 30):
         ma[i] = sum(last_cp[i: i + 20]) / 20
-
     return ma
 
 
 def dFromMA(last_cp, ma):
-
     dMa = [0] * 30
     for i in range(0, 30):
-        dMa[i] = (last_cp[i] - ma[i])
+        dMa[i] = (last_cp[i] - ma[i]) / last_cp[i]
 
-    return dMa
+    return dMa[::-1]
