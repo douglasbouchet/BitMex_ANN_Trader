@@ -1,20 +1,25 @@
 # HXRO_ANN_Trader
-Python artificial network able to trade using the HXRO API
+Python artificial network able to trade using BitMex API
 
 The steps are the following:
 
-- We already trained some artifical neural network on predicting trend of the Bitcoin for timeframe 15 minute, delay {1 to 3} which correspond to the HXRO possibilities.
+- We already trained some artifical neural network on predicting trend of the Bitcoin for timeframe:
+  - 15 minutes
+  - 1 hour
+  - 2 hours 
+  - 4 hours
+
+From delay ranging from 1 to 40. (but we will train again somme ann on more recent data, which could improve our results)
 
 
 - Get necessary data in order to make a prediction on the ANN 
-  - Cannot pass by bitmex cause data available only one day after
-  - -> Pass by xhro api, where can get the BTC price in real time
-
-  - Once data is fetch, use it to compute the last RSI, Momentum and difference from moving average
+  - Pass by bitmex api to fetch last btc price 
+  - Small difference between thoses prices and the one on which the training was performed due to Bitmex indexing, whoch transform a bit BTC price
+  
+- Once data is fetch, use it to compute the last RSI, Momentum and difference from moving average
   - Normalize all this, and pass it as input 
 
 - Once the prediction is done: 
-  - Prediction says to open a trade -> use the HXRO api to "enter contest"
+  - For the moment we will only back test, w/o picking any trade, to ensure of the accuracy of our ANN
 
-- While not actually picking trade on HXRO, make "fake trade", and compute the accuracy on them (+ PnL)
 
