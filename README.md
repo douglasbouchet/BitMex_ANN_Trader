@@ -1,4 +1,4 @@
-# HXRO_ANN_Trader
+# BitMex_ANN_Trader
 Python artificial network able to trade using BitMex API
 
 The steps are the following:
