@@ -1,10 +1,8 @@
 import requests
 import numpy as np
 import datetime
+from comptIndicators import computeMA, computeRSI, computeMomentum, dFromMA
 
-url = 'https://www.bitmex.com/api/v1/trade?symbol=.BXBT&count=100&columns=price&reverse=true'
-
-r = requests.get(url).json()
 # We want to predict up to 4 hours: ->
 # 1. we download all the 1 minutes tics to rebuild the last close price for 1 minute timeframe,
 # then we build for 15 min, 1hour, 4 hour + (see if we add some other timeframes)
@@ -77,14 +75,49 @@ def _4h_Candle(js):
     return arr[0:53]
 
 
-js15m = _15m_Candle(js)
-js1h = _1h_Candle(js)
-js2h = _2h_Candle(js)
-js4h = _4h_Candle(js)
+def Get15mInd():
+    js15m = _15m_Candle(js)
+    a = [js15m[1] for js15m in js15m][0:44][::-1]
+    b = [js15m[1] for js15m in js15m][0:44]
+    c = [js15m[1] for js15m in js15m][0:50]
+    rsi = computeRSI(a)  # from older one to recent one
+    mom = computeMomentum(b)  # from older one to recent one
+    dma = dFromMA(b, computeMA(c))  # from older one to recent one
+    cp = b[0:30][::-1]  # from older one to recent one
+    return cp, rsi, mom, dma
 
 
-# print(js15m)
-# print(js1h)
-# print(js2h)
-print(js4h)
-print(len(js4h))
+def Get1hInd():
+    js1h = _1h_Candle(js)
+    a = [js1h[1] for js1h in js1h][0:44][::-1]
+    b = [js1h[1] for js1h in js1h][0:44]
+    c = [js1h[1] for js1h in js1h][0:50]
+    rsi = computeRSI(a)  # from older one to recent one
+    mom = computeMomentum(b)  # from older one to recent one
+    dma = dFromMA(b, computeMA(c))  # from older one to recent one
+    cp = b[0:30][::-1]  # from older one to recent one
+    return cp, rsi, mom, dma
+
+
+def Get2hInd():
+    js2h = _2h_Candle(js)
+    a = [js2h[1] for js2h in js2h][0:44][::-1]
+    b = [js2h[1] for js2h in js2h][0:44]
+    c = [js2h[1] for js2h in js2h][0:50]
+    rsi = computeRSI(a)  # from older one to recent one
+    mom = computeMomentum(b)  # from older one to recent one
+    dma = dFromMA(b, computeMA(c))  # from older one to recent one
+    cp = b[0:30][::-1]  # from older one to recent one
+    return cp, rsi, mom, dma
+
+
+def Get4hInd():
+    js4h = _4h_Candle(js)
+    a = [js4h[1] for js4h in js4h][0:44][::-1]
+    b = [js4h[1] for js4h in js4h][0:44]
+    c = [js4h[1] for js4h in js4h][0:50]
+    rsi = computeRSI(a)  # from older one to recent one
+    mom = computeMomentum(b)  # from older one to recent one
+    dma = dFromMA(b, computeMA(c))  # from older one to recent one
+    cp = b[0:30][::-1]  # from older one to recent one
+    return cp, rsi, mom, dma
