@@ -29,9 +29,9 @@ def p4h():
 
 
 schedule.every(15).minutes.at(":03").do(p15m)
-schedule.every(1).hour.at("00:04").do(p1h)
-schedule.every(2).hours.at("00:05").do(p2h)
-schedule.every(4).hours.at("00:06").do(p4h)
+schedule.every(1).hour.at("02:00").do(p1h)
+schedule.every(2).hours.at("04:00").do(p2h)
+schedule.every(4).hours.at("08:00").do(p4h)
 
 while True:
     schedule.run_pending()

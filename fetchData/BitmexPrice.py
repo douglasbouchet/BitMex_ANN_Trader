@@ -11,19 +11,27 @@ from comptIndicators import computeMA, computeRSI, computeMomentum, dFromMA
 
 
 def getJson():
-    js = 0*np.empty((1))
+    js = 0 * np.empty((1))
     for i in range(0, 13):
-        if (i != 12):
-            url = 'https://www.bitmex.com/api/v1/trade?symbol=.BXBT&start=' + \
-                str(i*1000) + '&count=1000&columns=price&reverse=true'
+        if i != 12:
+            url = (
+                "https://www.bitmex.com/api/v1/trade?symbol=.BXBT&start="
+                + str(i * 1000)
+                + "&count=1000&columns=price&reverse=true"
+            )
         else:
-            url = 'https://www.bitmex.com/api/v1/trade?symbol=.BXBT&start=' + \
-                str(i*1000) + '&count=720&columns=price&reverse=true'
+            url = (
+                "https://www.bitmex.com/api/v1/trade?symbol=.BXBT&start="
+                + str(i * 1000)
+                + "&count=720&columns=price&reverse=true"
+            )
         js = np.concatenate((js, requests.get(url).json()))
     js = np.delete(js, 0)
     for i, el in enumerate(js):
-        js[i] = datetime.datetime.strptime(
-            el['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ'), el['price']
+        js[i] = (
+            datetime.datetime.strptime(el["timestamp"], "%Y-%m-%dT%H:%M:%S.%fZ"),
+            el["price"],
+        )
     return js
 
 
@@ -39,6 +47,18 @@ def _15m_Candle(js):
     return arr[0:53]
 
 
+def _15m_Candle_All(js):
+    while js[0][0].minute % 15 != 0:
+        js = np.delete(js, 0)
+    arr = [0] * 849
+    j = 0
+    for i, el in enumerate(js):
+        if el[0].minute % 15 == 0:
+            arr[j] = el
+            j += 1
+    return arr
+
+
 def _1h_Candle(js):
     while js[0][0].minute % 60 != 0:
         js = np.delete(js, 0)
@@ -49,6 +69,18 @@ def _1h_Candle(js):
             arr[j] = el
             j += 1
     return arr[0:53]
+
+
+def _1h_Candle_All(js):
+    while js[0][0].minute % 60 != 0:
+        js = np.delete(js, 0)
+    arr = [0] * 213
+    j = 0
+    for i, el in enumerate(js):
+        if el[0].minute % 60 == 0:
+            arr[j] = el
+            j += 1
+    return arr
 
 
 def _2h_Candle(js):
@@ -63,6 +95,18 @@ def _2h_Candle(js):
     return arr[0:53]
 
 
+def _2h_Candle_All(js):
+    while js[0][0].minute % 60 != 0 or js[0][0].hour % 2 != 0:
+        js = np.delete(js, 0)
+    arr = [0] * 106
+    j = 0
+    for i, el in enumerate(js):
+        if el[0].minute % 60 == 0 and el[0].hour % 2 == 0:
+            arr[j] = el
+            j += 1
+    return arr
+
+
 def _4h_Candle(js):
     while js[0][0].minute % 60 != 0 or js[0][0].hour % 4 != 0:
         js = np.delete(js, 0)
@@ -73,6 +117,18 @@ def _4h_Candle(js):
             arr[j] = el
             j += 1
     return arr[0:53]
+
+
+def _4h_Candle_All(js):
+    while js[0][0].minute % 60 != 0 or js[0][0].hour % 4 != 0:
+        js = np.delete(js, 0)
+    arr = [0] * 53
+    j = 0
+    for i, el in enumerate(js):
+        if el[0].minute % 60 == 0 and el[0].hour % 4 == 0:
+            arr[j] = el
+            j += 1
+    return arr
 
 
 def Get15mInd():
@@ -88,7 +144,7 @@ def Get15mInd():
 
 
 def Get1hInd():
-    js1h = _1h_Candle(getJson)
+    js1h = _1h_Candle(getJson())
     a = [js1h[1] for js1h in js1h][0:44][::-1]
     b = [js1h[1] for js1h in js1h][0:44]
     c = [js1h[1] for js1h in js1h][0:50]
