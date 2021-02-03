@@ -9,22 +9,22 @@ from comptIndicators import computeMA, computeRSI, computeMomentum, dFromMA
 
 # worst case: 4 * 60 * 53  = 12720 -> 13 request (1000 each) for the 4 hour timeframe
 
-js = 0*np.empty((1))
 
-for i in range(0, 13):
-    if (i != 12):
-        url = 'https://www.bitmex.com/api/v1/trade?symbol=.BXBT&start=' + \
-            str(i*1000) + '&count=1000&columns=price&reverse=true'
-    else:
-        url = 'https://www.bitmex.com/api/v1/trade?symbol=.BXBT&start=' + \
-            str(i*1000) + '&count=720&columns=price&reverse=true'
-    js = np.concatenate((js, requests.get(url).json()))
-
-js = np.delete(js, 0)
-
-for i, el in enumerate(js):
-    js[i] = datetime.datetime.strptime(
-        el['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ'), el['price']
+def getJson():
+    js = 0*np.empty((1))
+    for i in range(0, 13):
+        if (i != 12):
+            url = 'https://www.bitmex.com/api/v1/trade?symbol=.BXBT&start=' + \
+                str(i*1000) + '&count=1000&columns=price&reverse=true'
+        else:
+            url = 'https://www.bitmex.com/api/v1/trade?symbol=.BXBT&start=' + \
+                str(i*1000) + '&count=720&columns=price&reverse=true'
+        js = np.concatenate((js, requests.get(url).json()))
+    js = np.delete(js, 0)
+    for i, el in enumerate(js):
+        js[i] = datetime.datetime.strptime(
+            el['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ'), el['price']
+    return js
 
 
 def _15m_Candle(js):
@@ -76,7 +76,7 @@ def _4h_Candle(js):
 
 
 def Get15mInd():
-    js15m = _15m_Candle(js)
+    js15m = _15m_Candle(getJson())
     a = [js15m[1] for js15m in js15m][0:44][::-1]
     b = [js15m[1] for js15m in js15m][0:44]
     c = [js15m[1] for js15m in js15m][0:50]
@@ -88,7 +88,7 @@ def Get15mInd():
 
 
 def Get1hInd():
-    js1h = _1h_Candle(js)
+    js1h = _1h_Candle(getJson)
     a = [js1h[1] for js1h in js1h][0:44][::-1]
     b = [js1h[1] for js1h in js1h][0:44]
     c = [js1h[1] for js1h in js1h][0:50]
@@ -100,7 +100,7 @@ def Get1hInd():
 
 
 def Get2hInd():
-    js2h = _2h_Candle(js)
+    js2h = _2h_Candle(getJson())
     a = [js2h[1] for js2h in js2h][0:44][::-1]
     b = [js2h[1] for js2h in js2h][0:44]
     c = [js2h[1] for js2h in js2h][0:50]
@@ -112,7 +112,7 @@ def Get2hInd():
 
 
 def Get4hInd():
-    js4h = _4h_Candle(js)
+    js4h = _4h_Candle(getJson())
     a = [js4h[1] for js4h in js4h][0:44][::-1]
     b = [js4h[1] for js4h in js4h][0:44]
     c = [js4h[1] for js4h in js4h][0:50]

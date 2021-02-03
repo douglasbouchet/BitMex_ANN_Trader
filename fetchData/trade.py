@@ -28,10 +28,10 @@ def p4h():
     return
 
 
-# schedule.every(15).minute.at(":05").do(p15m)
-schedule.every(1).hour.at("00:03").do(p1h)
-schedule.every(2).hours.at("00:03").do(p2h)
-schedule.every(4).hours.at("00:05").do(p4h)
+schedule.every(15).minutes.at(":03").do(p15m)
+schedule.every(1).hour.at("00:04").do(p1h)
+schedule.every(2).hours.at("00:05").do(p2h)
+schedule.every(4).hours.at("00:06").do(p4h)
 
 while True:
     schedule.run_pending()

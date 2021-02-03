@@ -8,14 +8,21 @@ from BitmexPrice import Get15mInd, Get1hInd, Get2hInd, Get4hInd
 
 
 def trade(timeframe):
-    switcher = {
-        "15_min": Get15mInd(),
-        "1_h": Get1hInd(),
-        "2_h": Get2hInd(),
-        "4_h": Get4hInd(),
-    }
+    # switcher = {
+    #    "15_min": Get15mInd(),
+    #    "1_h": Get1hInd(),
+    #    "2_h": Get2hInd(),
+    #    # "4_h": Get4hInd(),
+    # }
 
-    cpT, rsiT, momT, maT = switcher.get(timeframe)
+    if(timeframe == "15_min"):
+        cpT, rsiT, momT, maT = Get15mInd()
+    if(timeframe == "1_h"):
+        cpT, rsiT, momT, maT = Get1hInd()
+    if(timeframe == "2_h"):
+        cpT, rsiT, momT, maT = Get2hInd()
+    if(timeframe == "4_h"):
+        cpT, rsiT, momT, maT = Get4hInd()
 
     scalerCp = joblib.load('../saved_model/scaler/' +
                            timeframe + '/scaler_cp.pkl')
