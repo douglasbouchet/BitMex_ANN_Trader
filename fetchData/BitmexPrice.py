@@ -1,6 +1,7 @@
 import requests
 import numpy as np
 import datetime
+import time
 from comptIndicators import computeMA, computeRSI, computeMomentum, dFromMA
 
 # We want to predict up to 4 hours: ->
@@ -8,6 +9,17 @@ from comptIndicators import computeMA, computeRSI, computeMomentum, dFromMA
 # then we build for 15 min, 1hour, 4 hour + (see if we add some other timeframes)
 
 # worst case: 4 * 60 * 53  = 12720 -> 13 request (1000 each) for the 4 hour timeframe
+
+
+def get_Price(url: str):
+    boo = True
+    while boo:
+        try:
+            r = requests.get(url).json()
+            boo = False
+            return r
+        except:
+            time.sleep(5)
 
 
 def getJson():
@@ -25,7 +37,8 @@ def getJson():
                 + str(i * 1000)
                 + "&count=720&columns=price&reverse=true"
             )
-        js = np.concatenate((js, requests.get(url).json()))
+        answer = get_Price(url)
+        js = np.concatenate((js, answer))
     js = np.delete(js, 0)
     for i, el in enumerate(js):
         js[i] = (
