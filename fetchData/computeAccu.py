@@ -31,7 +31,7 @@ for timeframe in tf:
 
     time.sleep(30)
     del cp[-1]
-    for delay in range(2, 3):
+    for delay in range(1, 2):
         path = (
             "/Users/douglasbouchet/HXRO_ANN_Trader/prediction/"
             + timeframe
@@ -75,10 +75,12 @@ for timeframe in tf:
                     if getAll(cp, dateC) != [] and float(proba) > 0.55:
                         openPrice = (getAll(cp, dateO))[0]
                         closePrice = (getAll(cp, dateC))[0]
-
+                        print(f"The open price is :{openPrice}")
+                        print(f"The close price is :{closePrice}")
                         if (state == "0" and closePrice > openPrice) or (
                             state == "1" and closePrice < openPrice
                         ):
+                            print("making a good prediction")
                             goodPred += 1
                         else:
                             badPred += 1
@@ -92,7 +94,11 @@ for timeframe in tf:
             writer.writerow(
                 [
                     "The accuracy is :",
-                    str(goodPred / (goodPred + badPred) * 100 if badPred != 0 else 100),
+                    str(
+                        goodPred / (goodPred + badPred) * 100
+                        if badPred != 0
+                        else "no trades"
+                    ),
                     "Percentage of trades :",
                     str(
                         float(goodPred + badPred) / float(nb_pred) * 100
