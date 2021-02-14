@@ -29,9 +29,9 @@ for timeframe in tf:
     if timeframe == "4_h":
         cp = _4h_Candle_All(getJson())
 
-    time.sleep(30)
+    time.sleep(5)
     del cp[-1]
-    for delay in range(1, 2):
+    for delay in range(1, 17):
         path = (
             "/Users/douglasbouchet/HXRO_ANN_Trader/prediction/"
             + timeframe
@@ -71,16 +71,13 @@ for timeframe in tf:
                         second=dC.second,
                     )
 
-                    print(getAll(cp, dateC) != [])
                     if getAll(cp, dateC) != [] and float(proba) > 0.55:
                         openPrice = (getAll(cp, dateO))[0]
                         closePrice = (getAll(cp, dateC))[0]
-                        print(f"The open price is :{openPrice}")
-                        print(f"The close price is :{closePrice}")
                         if (state == "0" and closePrice > openPrice) or (
                             state == "1" and closePrice < openPrice
                         ):
-                            print("making a good prediction")
+                            # print("making a good prediction")
                             goodPred += 1
                         else:
                             badPred += 1
@@ -96,7 +93,7 @@ for timeframe in tf:
                     "The accuracy is :",
                     str(
                         goodPred / (goodPred + badPred) * 100
-                        if badPred != 0
+                        if (goodPred + badPred) != 0
                         else "no trades"
                     ),
                     "Percentage of trades :",
