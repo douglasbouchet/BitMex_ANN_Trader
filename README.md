@@ -9,7 +9,7 @@ The steps are the following:
   - 2 hours 
   - 4 hours
 
-From delay ranging from 1 to 40. (but we will train again somme ann on more recent data, which could improve our results)
+From delay ranging from 1 to 40. (but we will train again some ANN on more recent data, which could improve our results)
 
 
 - Get necessary data in order to make a prediction on the ANN 
