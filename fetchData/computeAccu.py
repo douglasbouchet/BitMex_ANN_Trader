@@ -16,6 +16,10 @@ def getAll(data, key):
 
 
 tf = ["15_min", "1_h", "2_h", "4_h"]
+# tf = ["15_min"]
+path_to_pnl = "/Users/douglasbouchet/HXRO_ANN_Trader/prediction/pnl.csv"
+
+bet = 100
 
 for timeframe in tf:
     print("wait to compute: " + timeframe)
@@ -29,7 +33,7 @@ for timeframe in tf:
     if timeframe == "4_h":
         cp = _4h_Candle_All(getJson())
 
-    time.sleep(5)
+    time.sleep(30)
     del cp[-1]
     for delay in range(1, 17):
         path = (
@@ -42,6 +46,7 @@ for timeframe in tf:
         goodPred = 0
         badPred = 0
         nb_pred = 0
+        pnl = 0
         with open(path, newline="") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
@@ -74,16 +79,35 @@ for timeframe in tf:
                     if getAll(cp, dateC) != [] and float(proba) > 0.55:
                         openPrice = (getAll(cp, dateO))[0]
                         closePrice = (getAll(cp, dateC))[0]
-                        if (state == "0" and closePrice > openPrice) or (
-                            state == "1" and closePrice < openPrice
-                        ):
-                            # print("making a good prediction")
-                            goodPred += 1
-                        else:
-                            badPred += 1
+
+                        if state == 0:
+                            diff = (float(closePrice) - float(openPrice)) / float(
+                                closePrice
+                            )
+                            pnl += diff * bet
+                            pnl -= bet * 0.0015
+                            if closePrice > openPrice:
+                                goodPred += 1
+                                # good long
+                            else:
+                                badPred += 1
+                                # bad long
+                        elif state == "1":
+                            diff = (float(openPrice) - float(closePrice)) / float(
+                                openPrice
+                            )
+                            pnl += diff * bet
+                            pnl -= bet * 0.0015
+                            if closePrice < openPrice:
+                                goodPred += 1
+                                # good short
+                            else:
+                                badPred += 1
+                                # bad short
 
         with open(
-            path,
+            # path,
+            "/Users/douglasbouchet/HXRO_ANN_Trader/prediction/pnl.csv",
             "a",
             newline="",
         ) as file:
@@ -102,6 +126,15 @@ for timeframe in tf:
                         if nb_pred != 0
                         else 0.0
                     ),
+                    f"For delay {delay}",
+                ]
+            )
+            writer.writerow(
+                [
+                    "The pnl is :",
+                    str(pnl),
+                    "",
+                    "",
                     "",
                 ]
             )
